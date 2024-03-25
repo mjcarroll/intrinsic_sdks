@@ -7,6 +7,7 @@
 #include <cstring>
 #include <fstream>
 #include <ios>
+#include <string>
 #include <sstream>
 #include <string>
 
