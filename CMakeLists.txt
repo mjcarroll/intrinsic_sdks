@@ -34,6 +34,8 @@ set(intrinsic_proto_SRCS
   intrinsic/assets/proto/vendor.proto
   intrinsic/assets/proto/view.proto
   intrinsic/config/proto/ppr_refs.proto
+  intrinsic/assets/services/proto/service_http_config.proto
+  intrinsic/assets/services/proto/service_manifest.proto
   intrinsic/executive/proto/annotations.proto
   intrinsic/executive/proto/any_list.proto
   intrinsic/executive/proto/any_with_assignments.proto
@@ -88,6 +90,7 @@ set(intrinsic_proto_SRCS
   intrinsic/icon/proto/joint_position_pid_torque_controller_config.proto
   intrinsic/icon/proto/joint_space.proto
   intrinsic/icon/proto/linear_joint_acceleration_filter_config.proto
+  intrinsic/icon/proto/logging_mode.proto
   intrinsic/icon/proto/matrix.proto
   intrinsic/icon/proto/part_status.proto
   intrinsic/icon/proto/safety_status.proto
@@ -207,6 +210,7 @@ set(intrinsic_proto_SRCS
   intrinsic/world/proto/object_world_refs.proto
   intrinsic/world/proto/object_world_service.proto
   intrinsic/world/proto/object_world_updates.proto
+  intrinsic/world/proto/outfeed_component.proto
   intrinsic/world/proto/physics_component.proto
   intrinsic/world/proto/robot_payload.proto
   intrinsic/world/proto/sensor_component.proto
@@ -214,6 +218,7 @@ set(intrinsic_proto_SRCS
   intrinsic/world/proto/spawner_component.proto
   ${googleapis_SOURCE_DIR}/google/api/annotations.proto
   ${googleapis_SOURCE_DIR}/google/api/client.proto
+  ${googleapis_SOURCE_DIR}/google/api/field_behavior.proto
   ${googleapis_SOURCE_DIR}/google/api/http.proto
   ${googleapis_SOURCE_DIR}/google/api/launch_stage.proto
   ${googleapis_SOURCE_DIR}/google/longrunning/operations.proto
@@ -317,7 +322,6 @@ target_include_directories(skill_service_config_main PUBLIC
 add_library(${PROJECT_NAME}
   STATIC
   intrinsic/assets/id_utils.cc
-
   intrinsic/icon/interprocess/binary_futex.cc
   intrinsic/icon/proto/cart_space_conversion.cc
   intrinsic/icon/proto/eigen_conversion.cc
@@ -329,30 +333,26 @@ add_library(${PROJECT_NAME}
   intrinsic/icon/utils/realtime_guard.cc
   intrinsic/icon/utils/realtime_log_sink.cc
   intrinsic/icon/utils/realtime_status.cc
-
   intrinsic/kinematics/types/cartesian_limits.cc
   intrinsic/kinematics/types/dynamic_limits_check_mode.cc
   intrinsic/kinematics/types/joint_limits.cc
   intrinsic/kinematics/types/joint_limits_xd.cc
-
+  intrinsic/kinematics/types/to_fixed_string.cc
+  intrinsic/kinematics/types/to_string.cc
+  intrinsic/kinematics/validate_link_parameters.cc
   intrinsic/logging/data_logger_client.cc
   intrinsic/logging/structured_logging_client.cc
-
   intrinsic/math/proto_conversion.cc
   intrinsic/math/transform_utils.cc
   intrinsic/math/twist.cc
-
   intrinsic/motion_planning/conversions.cc
   intrinsic/motion_planning/motion_planner_client.cc
-
-  intrinsic/platform/common/buffers/realtime_write_queue.cc
   intrinsic/platform/common/buffers/internal/event_fd.cc
-
+  intrinsic/platform/common/buffers/realtime_write_queue.cc
   intrinsic/skills/cc/equipment_pack.cc
   intrinsic/skills/cc/skill_canceller.cc
   intrinsic/skills/cc/skill_interface_utils.cc
   intrinsic/skills/cc/skill_utils.cc
-
   intrinsic/skills/internal/default_parameters.cc
   intrinsic/skills/internal/equipment_utilities.cc
   intrinsic/skills/internal/error_utils.cc
@@ -364,12 +364,16 @@ add_library(${PROJECT_NAME}
   intrinsic/skills/internal/skill_proto_utils.cc
   intrinsic/skills/internal/skill_registry_client.cc
   intrinsic/skills/internal/skill_service_impl.cc
-
   intrinsic/util/grpc/channel.cc
   intrinsic/util/grpc/channel_interface.cc
   intrinsic/util/grpc/connection_params.cc
   intrinsic/util/grpc/grpc.cc
-
+  intrinsic/util/page_fault_info.cc
+  intrinsic/util/proto/descriptors.cc
+  intrinsic/util/proto/get_text_proto.cc
+  intrinsic/util/proto/merge.cc
+  intrinsic/util/proto/source_code_info_view.cc
+  intrinsic/util/proto_time.cc
   intrinsic/util/status/annotate.cc
   intrinsic/util/status/ret_check.cc
   intrinsic/util/status/ret_check_grpc.cc
@@ -378,19 +382,9 @@ add_library(${PROJECT_NAME}
   intrinsic/util/status/status_conversion_grpc.cc
   intrinsic/util/status/status_conversion_proto.cc
   intrinsic/util/status/status_conversion_rpc.cc
-
-  intrinsic/util/proto/descriptors.cc
-  intrinsic/util/proto/get_text_proto.cc
-  intrinsic/util/proto/merge.cc
-  intrinsic/util/proto/source_code_info_view.cc
-
   intrinsic/util/thread/lockstep.cc
   intrinsic/util/thread/thread.cc
   intrinsic/util/thread/util.cc
-
-  intrinsic/util/page_fault_info.cc
-  intrinsic/util/proto_time.cc
-
   intrinsic/world/objects/frame.cc
   intrinsic/world/objects/kinematic_object.cc
   intrinsic/world/objects/object_entity_filter.cc
@@ -399,6 +393,7 @@ add_library(${PROJECT_NAME}
   intrinsic/world/objects/object_world_ids.cc
   intrinsic/world/objects/transform_node.cc
   intrinsic/world/objects/world_object.cc
+  intrinsic/world/robot_payload/robot_payload.cc
 )
 
 
